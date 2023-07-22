@@ -3,41 +3,39 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use App\Repository\ExcludeUserModificationRepository;
+use App\Repository\ExcludeModificationRepository;
 use Doctrine\ORM\Mapping as ORM;
+
 #[ApiResource(
     operations: [
-        new GetCollection(),
         new Get(),
+        new GetCollection(),
         new Post(),
-        new Put()
+        new Put(),
+        new Delete(),
     ]
 )]
-#[ORM\Entity(repositoryClass: ExcludeUserModificationRepository::class)]
-class ExcludeUserModification
+#[ORM\Entity(repositoryClass: ExcludeModificationRepository::class)]
+class ExcludeModification
 {
     #[ORM\Id]
-    #[ORM\Column(length: 255)]
-    private ?string $uid = null;
+    #[ORM\Column(length: 255, unique: true)]
+    private string $uid;
 
-    #[ORM\ManyToOne(inversedBy: 'excludeUserModifications')]
-    #[ORM\JoinColumn(referencedColumnName: 'uid',nullable: false)]
-    private ?Payment $paymentUid = null;
+    #[ORM\ManyToOne(inversedBy: 'excludeModifications')]
+    #[ORM\JoinColumn(name: 'payment_uid', referencedColumnName: 'uid', nullable: false)]
+    private ?Payment $paymentUid;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(referencedColumnName: 'uid',nullable: false)]
-    private ?User $userUid = null;
+    #[ORM\JoinColumn(name: 'user_uid', referencedColumnName: 'uid', nullable: false)]
+    private ?User $userUid;
 
-    public function getId(): ?int
-    {
-        return $this->uid;
-    }
-
-    public function getUid(): ?string
+    public function getUid(): string
     {
         return $this->uid;
     }

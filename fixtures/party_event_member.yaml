@@ -1,0 +1,6 @@
+#api/fixtures/party_event_member.yaml
+App\Entity\PartyEventMember:
+  PartyEventMember_{1..50}:
+    uid: <isbn10()>
+    user_uid: '@user_*'
+    event_uid: '@partyEvent_*'

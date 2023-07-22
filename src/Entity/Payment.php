@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
@@ -12,56 +13,54 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+
 #[ApiResource(
     operations: [
-        new GetCollection(),
         new Get(),
+        new GetCollection(),
         new Post(),
-        new Put()
+        new Put(),
+        new Delete(),
     ]
 )]
 #[ORM\Entity(repositoryClass: PaymentRepository::class)]
 class Payment
 {
+
     #[ORM\Id]
-    #[ORM\Column(length: 255)]
-    private ?string $uid = null;
-
-    #[ORM\ManyToOne(inversedBy: 'payments')]
-    #[ORM\JoinColumn(referencedColumnName: 'uid',nullable: false)]
-    private ?Event $eventUid = null;
-
-    #[ORM\ManyToOne(inversedBy: 'payments')]
-    #[ORM\JoinColumn(referencedColumnName: 'uid',nullable: false)]
-    private ?User $userUid = null;
+    #[ORM\Column(length: 255, unique: true)]
+    private string $uid;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    private string $name;
 
     #[ORM\Column]
-    private ?string $money = null;
+    private int $amount;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(name: 'event_uid', referencedColumnName: 'uid', nullable: false)]
+    private PartyEvent $eventUid;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(name: 'user_uid', referencedColumnName: 'uid', nullable: false)]
+    private User $userUid;
+
     #[ORM\OneToMany(mappedBy: 'paymentUid', targetEntity: CalculationModification::class, orphanRemoval: true)]
     private Collection $calculationModifications;
 
-    #[ORM\OneToMany(mappedBy: 'paymentUid', targetEntity: ExcludeUserModification::class, orphanRemoval: true)]
-    private Collection $excludeUserModifications;
+    #[ORM\OneToMany(mappedBy: 'paymentUid', targetEntity: ExcludeModification::class, orphanRemoval: true)]
+    private Collection $excludeModifications;
 
     public function __construct()
     {
         $this->calculationModifications = new ArrayCollection();
-        $this->excludeUserModifications = new ArrayCollection();
+        $this->excludeModifications = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
-        return $this->uid;
-    }
-
-    public function getUid(): ?string
+    public function getUid(): string
     {
         return $this->uid;
     }
@@ -73,12 +72,48 @@ class Payment
         return $this;
     }
 
-    public function getEventUid(): ?Event
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getAmount(): int
+    {
+        return $this->amount;
+    }
+
+    public function setAmount(int $amount): static
+    {
+        $this->amount = $amount;
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): static
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    public function getEventUid(): ?PartyEvent
     {
         return $this->eventUid;
     }
 
-    public function setEventUid(?Event $eventUid): static
+    public function setEventUid(?PartyEvent $eventUid): static
     {
         $this->eventUid = $eventUid;
 
@@ -93,42 +128,6 @@ class Payment
     public function setUserUid(?User $userUid): static
     {
         $this->userUid = $userUid;
-
-        return $this;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getMoney(): ?string
-    {
-        return $this->money;
-    }
-
-    public function setMoney(string $money): static
-    {
-        $this->money = $money;
-
-        return $this;
-    }
-
-    public function getDate(): ?\DateTimeInterface
-    {
-        return $this->date;
-    }
-
-    public function setDate(\DateTimeInterface $date): static
-    {
-        $this->date = $date;
 
         return $this;
     }
@@ -164,29 +163,29 @@ class Payment
     }
 
     /**
-     * @return Collection<int, ExcludeUserModification>
+     * @return Collection<int, ExcludeModification>
      */
-    public function getExcludeUserModifications(): Collection
+    public function getExcludeModifications(): Collection
     {
-        return $this->excludeUserModifications;
+        return $this->excludeModifications;
     }
 
-    public function addExcludeUserModification(ExcludeUserModification $excludeUserModification): static
+    public function addExcludeModification(ExcludeModification $excludeModification): static
     {
-        if (!$this->excludeUserModifications->contains($excludeUserModification)) {
-            $this->excludeUserModifications->add($excludeUserModification);
-            $excludeUserModification->setPaymentUid($this);
+        if (!$this->excludeModifications->contains($excludeModification)) {
+            $this->excludeModifications->add($excludeModification);
+            $excludeModification->setPaymentUid($this);
         }
 
         return $this;
     }
 
-    public function removeExcludeUserModification(ExcludeUserModification $excludeUserModification): static
+    public function removeExcludeModification(ExcludeModification $excludeModification): static
     {
-        if ($this->excludeUserModifications->removeElement($excludeUserModification)) {
+        if ($this->excludeModifications->removeElement($excludeModification)) {
             // set the owning side to null (unless already changed)
-            if ($excludeUserModification->getPaymentUid() === $this) {
-                $excludeUserModification->setPaymentUid(null);
+            if ($excludeModification->getPaymentUid() === $this) {
+                $excludeModification->setPaymentUid(null);
             }
         }
 

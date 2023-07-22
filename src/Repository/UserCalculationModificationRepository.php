@@ -7,12 +7,12 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<UserMalculationModification>
+ * @extends ServiceEntityRepository<UserCalculationModification>
  *
- * @method UserMalculationModification|null find($id, $lockMode = null, $lockVersion = null)
- * @method UserMalculationModification|null findOneBy(array $criteria, array $orderBy = null)
- * @method UserMalculationModification[]    findAll()
- * @method UserMalculationModification[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method UserCalculationModification|null find($id, $lockMode = null, $lockVersion = null)
+ * @method UserCalculationModification|null findOneBy(array $criteria, array $orderBy = null)
+ * @method UserCalculationModification[]    findAll()
+ * @method UserCalculationModification[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class UserCalculationModificationRepository extends ServiceEntityRepository
 {
@@ -22,7 +22,7 @@ class UserCalculationModificationRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return UserMalculationModification[] Returns an array of UserMalculationModification objects
+//     * @return UserCalculationModification[] Returns an array of UserCalculationModification objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -36,7 +36,7 @@ class UserCalculationModificationRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?UserMalculationModification
+//    public function findOneBySomeField($value): ?UserCalculationModification
 //    {
 //        return $this->createQueryBuilder('u')
 //            ->andWhere('u.exampleField = :val')

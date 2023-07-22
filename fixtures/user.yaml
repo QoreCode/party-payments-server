@@ -1,0 +1,6 @@
+#api/fixtures/user.yaml
+App\Entity\User:
+  user_{1..1000}:
+    uid: <isbn10()>
+    name: <firstName()>
+    credit_card_number: <creditCardNumber()>

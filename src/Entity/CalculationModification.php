@@ -3,52 +3,38 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\CalculationModificationRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+
 #[ApiResource(
     operations: [
-        new GetCollection(),
         new Get(),
+        new GetCollection(),
         new Post(),
-        new Put()
+        new Put(),
+        new Delete(),
     ]
 )]
 #[ORM\Entity(repositoryClass: CalculationModificationRepository::class)]
 class CalculationModification
 {
-
     #[ORM\Id]
-    #[ORM\Column(length: 255)]
-    private ?string $uid = null;
+    #[ORM\Column(length: 255, unique: true)]
+    private ?string $uid;
 
     #[ORM\ManyToOne(inversedBy: 'calculationModifications')]
-    #[ORM\JoinColumn(referencedColumnName: 'uid',nullable: false)]
-    private ?Payment $paymentUid = null;
+    #[ORM\JoinColumn(name: 'payment_uid', referencedColumnName: 'uid', nullable: false)]
+    private ?Payment $paymentUid;
 
     #[ORM\Column]
-    private ?int $mathExpression = null;
+    private int $mathExpression;
 
-    #[ORM\OneToMany(mappedBy: 'calculationModificationUid', targetEntity: UserCalculationModification::class, orphanRemoval: true)]
-    private Collection $userCalculationModifications;
-
-    public function __construct()
-    {
-        $this->userCalculationModifications = new ArrayCollection();
-    }
-
-
-    public function getId(): ?int
-    {
-        return $this->uid;
-    }
-
-    public function getUid(): ?string
+    public function getUid(): string
     {
         return $this->uid;
     }
@@ -72,7 +58,7 @@ class CalculationModification
         return $this;
     }
 
-    public function getMathExpression(): ?int
+    public function getMathExpression(): int
     {
         return $this->mathExpression;
     }
@@ -80,36 +66,6 @@ class CalculationModification
     public function setMathExpression(int $mathExpression): static
     {
         $this->mathExpression = $mathExpression;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, UserCalculationModification>
-     */
-    public function getUserCalculationModifications(): Collection
-    {
-        return $this->userCalculationModifications;
-    }
-
-    public function addUserCalculationModification(UserCalculationModification $userCalculationModification): static
-    {
-        if (!$this->userCalculationModifications->contains($userCalculationModification)) {
-            $this->userCalculationModifications->add($userCalculationModification);
-            $userCalculationModification->setCalculationModificationUid($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUserCalculationModification(UserCalculationModification $userCalculationModification): static
-    {
-        if ($this->userCalculationModifications->removeElement($userCalculationModification)) {
-            // set the owning side to null (unless already changed)
-            if ($userCalculationModification->getCalculationModificationUid() === $this) {
-                $userCalculationModification->setCalculationModificationUid(null);
-            }
-        }
 
         return $this;
     }

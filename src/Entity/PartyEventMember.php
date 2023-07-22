@@ -8,7 +8,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use App\Repository\UserCalculationModificationRepository;
+use App\Repository\PartyEventMemberRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ApiResource(
@@ -20,8 +20,8 @@ use Doctrine\ORM\Mapping as ORM;
         new Delete(),
     ]
 )]
-#[ORM\Entity(repositoryClass: UserCalculationModificationRepository::class)]
-class UserCalculationModification
+#[ORM\Entity(repositoryClass: PartyEventMemberRepository::class)]
+class PartyEventMember
 {
     #[ORM\Id]
     #[ORM\Column(length: 255, unique: true)]
@@ -29,11 +29,11 @@ class UserCalculationModification
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(name: 'user_uid', referencedColumnName: 'uid', nullable: false)]
-    private ?User $userUid;
+    private ?User $userUid = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(name: 'calculation_modification_uid', referencedColumnName: 'uid', nullable: false)]
-    private ?CalculationModification $calculationModificationUid;
+    #[ORM\JoinColumn(name: 'event_uid', referencedColumnName: 'uid', nullable: false)]
+    private ?PartyEvent $eventUid = null;
 
     public function getUid(): string
     {
@@ -59,15 +59,17 @@ class UserCalculationModification
         return $this;
     }
 
-    public function getCalculationModificationUid(): ?CalculationModification
+    public function getEventUid(): ?PartyEvent
     {
-        return $this->calculationModificationUid;
+        return $this->eventUid;
     }
 
-    public function setCalculationModificationUid(?CalculationModification $calculationModificationUid): static
+    public function setEventUid(?PartyEvent $eventUid): static
     {
-        $this->calculationModificationUid = $calculationModificationUid;
+        $this->eventUid = $eventUid;
 
         return $this;
     }
+
+
 }

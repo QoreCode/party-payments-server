@@ -8,10 +8,10 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
-use App\Repository\UserRepository;
+use App\Repository\PartyEventRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ApiResource(
     operations: [
@@ -22,26 +22,23 @@ use Symfony\Component\Validator\Constraints\NotBlank;
         new Delete(),
     ]
 )]
-#[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: '`user`')]
-class User
+#[ORM\Entity(repositoryClass: PartyEventRepository::class)]
+class PartyEvent
 {
+
     #[ORM\Id]
     #[ORM\Column(length: 255, unique: true)]
     private string $uid;
 
     #[ORM\Column(length: 255)]
-    #[NotBlank]
+    #[Assert\NotBlank]
     private string $name;
 
-    #[ORM\Column(length: 20, nullable: true)]
-    #[Assert\CardScheme(schemes: [Assert\CardScheme::VISA, Assert\CardScheme::MASTERCARD])]
-    private ?string $creditCardNumber = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $date = null;
 
-    #[ORM\Column]
-    private bool $isActive = true;
 
-    public function getUid(): ?string
+    public function getUid(): string
     {
         return $this->uid;
     }
@@ -65,29 +62,15 @@ class User
         return $this;
     }
 
-    public function getCreditCardNumber(): ?string
+    public function getDate(): ?\DateTimeInterface
     {
-        return $this->creditCardNumber;
+        return $this->date;
     }
 
-    public function setCreditCardNumber(?string $creditCardNumber): static
+    public function setDate(\DateTimeInterface $date): static
     {
-        $this->creditCardNumber = $creditCardNumber;
+        $this->date = $date;
 
         return $this;
     }
-
-    public function isIsActive(): bool
-    {
-        return $this->isActive;
-    }
-
-    public function setIsActive(bool $isActive): static
-    {
-        $this->isActive = $isActive;
-
-        return $this;
-    }
-
-
 }
