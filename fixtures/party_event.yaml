@@ -1,0 +1,6 @@
+#api/fixtures/party_event.yaml
+App\Entity\PartyEvent:
+  partyEvent_{1..20}:
+    uid: <isbn10()>
+    name: <catchPhrase()>
+    date: <dateTime()>
