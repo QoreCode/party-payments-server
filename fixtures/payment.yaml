@@ -1,0 +1,9 @@
+#api/fixtures/payment.yaml
+App\Entity\Payment:
+  payment_{1..50}:
+    uid: <isbn10()>
+    name: <catchPhrase()>
+    amount: <randomNumber()>
+    date: <dateTime()>
+    event_uid: '@partyEvent_*'
+    user_uid: '@user_*'
