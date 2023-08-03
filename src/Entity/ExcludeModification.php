@@ -2,13 +2,15 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
 use App\Repository\ExcludeModificationRepository;
+use App\Validator\Constraints\ExcludedMember;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ApiResource(
@@ -16,57 +18,59 @@ use Doctrine\ORM\Mapping as ORM;
         new Get(),
         new GetCollection(),
         new Post(),
-        new Put(),
         new Delete(),
-    ]
+    ],
+    formats: ['json'],
+    collectDenormalizationErrors: true
 )]
+#[ApiFilter(filterClass: SearchFilter::class, properties: ['payment', 'member'])]
 #[ORM\Entity(repositoryClass: ExcludeModificationRepository::class)]
+#[ORM\UniqueConstraint(columns: ['payment_uid', 'member_uid'])]
 class ExcludeModification
 {
     #[ORM\Id]
     #[ORM\Column(length: 255, unique: true)]
     private string $uid;
 
-    #[ORM\ManyToOne(inversedBy: 'excludeModifications')]
-    #[ORM\JoinColumn(name: 'payment_uid', referencedColumnName: 'uid', nullable: false)]
-    private ?Payment $paymentUid;
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(name: 'payment_uid', referencedColumnName: 'uid', nullable: false, onDelete: "CASCADE")]
+    private Payment $payment;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(name: 'user_uid', referencedColumnName: 'uid', nullable: false)]
-    private ?User $userUid;
+    #[ORM\JoinColumn(name: 'member_uid', referencedColumnName: 'uid', nullable: false, onDelete: "CASCADE")]
+    #[ExcludedMember]
+    private Member $member;
+
+    public function __construct($uid)
+    {
+        $this->uid = $uid;
+    }
 
     public function getUid(): string
     {
         return $this->uid;
     }
 
-    public function setUid(string $uid): static
+    public function getPayment(): Payment
     {
-        $this->uid = $uid;
+        return $this->payment;
+    }
+
+    public function setPayment(Payment $payment): static
+    {
+        $this->payment = $payment;
 
         return $this;
     }
 
-    public function getPaymentUid(): ?Payment
+    public function getMember(): Member
     {
-        return $this->paymentUid;
+        return $this->member;
     }
 
-    public function setPaymentUid(?Payment $paymentUid): static
+    public function setMember(Member $member): static
     {
-        $this->paymentUid = $paymentUid;
-
-        return $this;
-    }
-
-    public function getUserUid(): ?User
-    {
-        return $this->userUid;
-    }
-
-    public function setUserUid(?User $userUid): static
-    {
-        $this->userUid = $userUid;
+        $this->member = $member;
 
         return $this;
     }

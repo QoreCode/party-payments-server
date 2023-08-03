@@ -2,27 +2,27 @@
 
 namespace App\Repository;
 
-use App\Entity\PartyEventMember;
+use App\Entity\Member;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<PartyEventMember>
+ * @extends ServiceEntityRepository<Member>
  *
- * @method PartyEventMember|null find($id, $lockMode = null, $lockVersion = null)
- * @method PartyEventMember|null findOneBy(array $criteria, array $orderBy = null)
- * @method PartyEventMember[]    findAll()
- * @method PartyEventMember[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Member|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Member|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Member[]    findAll()
+ * @method Member[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class PartyEventMemberRepository extends ServiceEntityRepository
+class MemberRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, PartyEventMember::class);
+        parent::__construct($registry, Member::class);
     }
 
 //    /**
-//     * @return PartyEventMember[] Returns an array of PartyEventMember objects
+//     * @return Member[] Returns an array of Member objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -36,7 +36,7 @@ class PartyEventMemberRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?PartyEventMember
+//    public function findOneBySomeField($value): ?Member
 //    {
 //        return $this->createQueryBuilder('p')
 //            ->andWhere('p.exampleField = :val')
