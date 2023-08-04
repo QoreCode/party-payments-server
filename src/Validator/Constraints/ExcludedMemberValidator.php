@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection ALL */
 
 namespace App\Validator\Constraints;
 
@@ -10,13 +10,17 @@ use Symfony\Component\Validator\ConstraintValidator;
 class ExcludedMemberValidator extends ConstraintValidator
 {
 
-    public function validate($value, Constraint $constraint): void
+    /**
+     * @param Member $member
+     * @param Constraint $constraint
+     * @return void
+     */
+    public function validate($member, Constraint $constraint): void
     {
-        /** @var Member $value */
-        /** @var ExcludeModification $object */
-        $object = $this->context->getObject();
+        /** @var ExcludeModification $excludeModification */
+        $excludeModification = $this->context->getObject();
 
-        if ($value && $value->getEvent()->getUid() !== $object->getPayment()->getEvent()->getUid()) {
+        if ($member->getEvent()->getUid() !== $excludeModification->getPayment()->getEvent()->getUid()) {
             $this->context->buildViolation($constraint->message)->addViolation();
         }
     }
