@@ -49,7 +49,7 @@ class CalculationModification
 
     #[ORM\JoinTable(name: 'member_calculation_modification')]
     #[ORM\JoinColumn(name: 'calculation_modification_uid', referencedColumnName: 'uid', nullable: false, onDelete: "CASCADE")]
-    #[ORM\InverseJoinColumn(name: 'member_uid', referencedColumnName: 'uid')]
+    #[ORM\InverseJoinColumn(name: 'member_uid', referencedColumnName: 'uid',  onDelete: "CASCADE")]
     #[ORM\ManyToMany(targetEntity: Member::class)]
     #[NotNull]
     #[CalculationModificationMember]
