@@ -16,7 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
     operations: [
@@ -35,13 +35,16 @@ class CalculationModification
 {
     #[ORM\Id]
     #[ORM\Column(length: 255, unique: true)]
+    #[Assert\NotBlank]
     private string $uid;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(name: 'payment_uid', referencedColumnName: 'uid', nullable: false, onDelete: "CASCADE")]
+    #[Assert\NotBlank]
     private Payment $payment;
 
     #[ORM\Column(type: Types::INTEGER)]
+    #[Assert\NotBlank]
     private string $expression;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -51,7 +54,7 @@ class CalculationModification
     #[ORM\JoinColumn(name: 'calculation_modification_uid', referencedColumnName: 'uid', nullable: false, onDelete: "CASCADE")]
     #[ORM\InverseJoinColumn(name: 'member_uid', referencedColumnName: 'uid',  onDelete: "CASCADE")]
     #[ORM\ManyToMany(targetEntity: Member::class)]
-    #[NotNull]
+    #[Assert\NotNull]
     #[CalculationModificationMember]
     private Collection $members;
 
