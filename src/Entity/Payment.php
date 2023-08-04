@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\OpenApi\Serializer\OpenApiNormalizer;
 use App\Repository\PaymentRepository;
 use App\Validator\Constraints\EventMember;
 use Doctrine\DBAL\Types\Types;
@@ -31,7 +32,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Delete()
     ],
-    formats: ['json'],
+    formats: [OpenApiNormalizer::FORMAT],
     denormalizationContext: [
         'groups' => [
             'payment:create',

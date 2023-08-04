@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\OpenApi\Serializer\OpenApiNormalizer;
 use App\Repository\CalculationModificationRepository;
 use App\Validator\Constraints\CalculationModificationMember;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -26,7 +27,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Put(),
         new Delete(),
     ],
-    formats: ['json'],
+    formats: [OpenApiNormalizer::FORMAT],
     collectDenormalizationErrors: true
 )]
 #[ApiFilter(filterClass: SearchFilter::class, properties: ['payment'])]

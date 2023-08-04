@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\OpenApi\Serializer\OpenApiNormalizer;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -22,7 +23,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
         new Post(),
         new Put(),
     ],
-    formats: ['json'],
+    formats: [OpenApiNormalizer::FORMAT],
     collectDenormalizationErrors: true
 )]
 #[ApiFilter(filterClass: SearchFilter::class, properties: ['name' => 'partial', 'isActive' => 'exact'])]
