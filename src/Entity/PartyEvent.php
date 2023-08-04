@@ -45,12 +45,14 @@ class PartyEvent
     #[Assert\NotBlank]
     private string $name;
 
-    #[ORM\Column(type: Types::BIGINT, nullable: true)]
-    private ?int $date = null;
+    #[ORM\Column(type: Types::INTEGER)]
+    #[Assert\NotBlank]
+    private int $date;
 
-    public function __construct($uid)
+    public function __construct($uid, $date = null)
     {
         $this->uid = $uid;
+        $this->date = $date ?? time();
     }
 
     public function getUid(): string
@@ -70,7 +72,7 @@ class PartyEvent
         return $this;
     }
 
-    public function getDate(): ?int
+    public function getDate(): int
     {
         return $this->date;
     }

@@ -59,28 +59,31 @@ class Payment
     private PartyEvent $event;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(name: 'member_uid', referencedColumnName: 'uid', nullable: false, onDelete: "CASCADE")]
-    #[Groups(['payment:create'])]
+    #[ORM\JoinColumn(name: 'payer_uid', referencedColumnName: 'uid', nullable: false, onDelete: "CASCADE")]
+    #[Groups(['payment:create', 'payment:update'])]
+    #[Assert\NotBlank]
     #[EventMember]
-    private Member $member;
+    private Member $payer;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Groups(['payment:create', 'payment:update'])]
     private string $name;
 
-    #[ORM\Column(type: Types::BIGINT)]
+    #[ORM\Column(type: Types::INTEGER)]
     #[Assert\GreaterThan(0)]
     #[Groups(['payment:create', 'payment:update'])]
     private int $amount;
 
-    #[ORM\Column(type: Types::BIGINT, nullable: true)]
-    #[Groups(['payment:create', 'payment:update'])]
-    private ?string $date = null;
+    #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(['payment:create'])]
+    private string $date;
 
-    public function __construct($uid)
+    public function __construct($uid, $event, $date = null)
     {
         $this->uid = $uid;
+        $this->event = $event;
+        $this->date = $date ?? time();
     }
 
     public function getUid(): string
@@ -93,21 +96,14 @@ class Payment
         return $this->event;
     }
 
-    public function setEvent(PartyEvent $event): static
+    public function getPayer(): Member
     {
-        $this->event = $event;
-
-        return $this;
+        return $this->payer;
     }
 
-    public function getMember(): Member
+    public function setPayer(Member $payer): static
     {
-        return $this->member;
-    }
-
-    public function setMember(Member $member): static
-    {
-        $this->member = $member;
+        $this->payer = $payer;
 
         return $this;
     }
@@ -136,12 +132,12 @@ class Payment
         return $this;
     }
 
-    public function getDate(): ?int
+    public function getDate(): int
     {
         return $this->date;
     }
 
-    public function setDate(?int $date): static
+    public function setDate(int $date): static
     {
         $this->date = $date;
 

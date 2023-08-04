@@ -77,9 +77,11 @@ class Member
     #[MemberAndPayerSameEvent]
     private Collection $payedFor;
 
-    public function __construct($uid)
+    public function __construct($uid, $event, $user)
     {
         $this->uid = $uid;
+        $this->event = $event;
+        $this->user = $user;
         $this->payedFor = new ArrayCollection();
     }
 
@@ -93,23 +95,9 @@ class Member
         return $this->user;
     }
 
-    public function setUser(User $user): static
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
     public function getEvent(): PartyEvent
     {
         return $this->event;
-    }
-
-    public function setEvent(PartyEvent $event): static
-    {
-        $this->event = $event;
-
-        return $this;
     }
 
     /**
@@ -123,7 +111,7 @@ class Member
     /**
      * @param Member|null $payer
      */
-    public function setPayer(?Member $payer): void
+    private function setPayer(?Member $payer): void
     {
         $this->payer = $payer;
     }

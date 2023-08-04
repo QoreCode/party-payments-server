@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\Post;
 use App\Repository\ExcludeModificationRepository;
 use App\Validator\Constraints\ExcludedMember;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ApiResource(
     operations: [
@@ -30,20 +31,25 @@ class ExcludeModification
 {
     #[ORM\Id]
     #[ORM\Column(length: 255, unique: true)]
+    #[NotBlank]
     private string $uid;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(name: 'payment_uid', referencedColumnName: 'uid', nullable: false, onDelete: "CASCADE")]
+    #[NotBlank]
     private Payment $payment;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(name: 'member_uid', referencedColumnName: 'uid', nullable: false, onDelete: "CASCADE")]
+    #[NotBlank]
     #[ExcludedMember]
     private Member $member;
 
-    public function __construct($uid)
+    public function __construct($uid, $payment, $member)
     {
         $this->uid = $uid;
+        $this->payment = $payment;
+        $this->member = $member;
     }
 
     public function getUid(): string
@@ -56,22 +62,8 @@ class ExcludeModification
         return $this->payment;
     }
 
-    public function setPayment(Payment $payment): static
-    {
-        $this->payment = $payment;
-
-        return $this;
-    }
-
     public function getMember(): Member
     {
         return $this->member;
-    }
-
-    public function setMember(Member $member): static
-    {
-        $this->member = $member;
-
-        return $this;
     }
 }

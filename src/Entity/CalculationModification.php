@@ -41,7 +41,7 @@ class CalculationModification
     #[ORM\JoinColumn(name: 'payment_uid', referencedColumnName: 'uid', nullable: false, onDelete: "CASCADE")]
     private Payment $payment;
 
-    #[ORM\Column(type: Types::BIGINT)]
+    #[ORM\Column(type: Types::INTEGER)]
     private string $expression;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -56,10 +56,11 @@ class CalculationModification
     private Collection $members;
 
 
-    public function __construct($uid)
+    public function __construct($uid, $payment)
     {
         $this->uid = $uid;
         $this->members = new ArrayCollection();
+        $this->payment = $payment;
     }
 
     public function getUid(): string
@@ -70,13 +71,6 @@ class CalculationModification
     public function getPayment(): Payment
     {
         return $this->payment;
-    }
-
-    public function setPayment(Payment $payment): static
-    {
-        $this->payment = $payment;
-
-        return $this;
     }
 
     public function getExpression(): string
