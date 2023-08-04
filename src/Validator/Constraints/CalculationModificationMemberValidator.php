@@ -17,9 +17,9 @@ class CalculationModificationMemberValidator extends ConstraintValidator
      */
     public function validate($membersCollection, Constraint $constraint): void
     {
-        /** @var CalculationModification $object */
-        $object = $this->context->getObject();
-        $calculationModificationEventUid = $object->getPayment()->getEvent()->getUid();
+        /** @var CalculationModification $calculationModification */
+        $calculationModification = $this->context->getObject();
+        $calculationModificationEventUid = $calculationModification->getPayment()->getEvent()->getUid();
         /** @var Member $member */
         foreach ($membersCollection->getValues() as $member) {
             if ($member->getEvent()->getUid() !== $calculationModificationEventUid) {

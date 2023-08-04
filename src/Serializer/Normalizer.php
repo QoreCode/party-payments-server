@@ -10,13 +10,6 @@ use App\Entity\Payment;
 
 class Normalizer extends ItemNormalizer
 {
-/*    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
-    {
-        return $data instanceof Payment
-            || $data instanceof Member
-            || $data instanceof ExcludeModification;
-    }*/
-
     protected function normalizeRelation(
         ApiProperty $propertyMetadata,
         ?object $relatedObject,
