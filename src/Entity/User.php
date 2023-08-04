@@ -2,12 +2,15 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use ApiPlatform\Metadata\Delete;
+use ApiPlatform\OpenApi\Serializer\OpenApiNormalizer;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -19,15 +22,19 @@ use Symfony\Component\Validator\Constraints\NotBlank;
         new GetCollection(),
         new Post(),
         new Put(),
-        new Delete(),
-    ]
+    ],
+    formats: [OpenApiNormalizer::FORMAT],
+    collectDenormalizationErrors: true
 )]
+#[ApiFilter(filterClass: SearchFilter::class, properties: ['name' => 'partial', 'isActive' => 'exact'])]
+#[ApiFilter(OrderFilter::class, properties: ['name' => 'ASC', 'isActive' => 'ASC'])]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 class User
 {
     #[ORM\Id]
     #[ORM\Column(length: 255, unique: true)]
+    #[NotBlank]
     private string $uid;
 
     #[ORM\Column(length: 255)]
@@ -41,16 +48,14 @@ class User
     #[ORM\Column]
     private bool $isActive = true;
 
-    public function getUid(): ?string
-    {
-        return $this->uid;
-    }
-
-    public function setUid(string $uid): static
+    public function __construct($uid)
     {
         $this->uid = $uid;
+    }
 
-        return $this;
+    public function getUid(): string
+    {
+        return $this->uid;
     }
 
     public function getName(): string
