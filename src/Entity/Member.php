@@ -123,29 +123,20 @@ class Member
         $this->payer = $payer;
     }
 
-    /**
-     * @param array $payedFor
-     * @return Member
-     */
-    public function setPayedFor(array $payedFor): Member
+    public function addPayedFor(Member $member): static
     {
-        $payedForUids = [];
-        /** @var Member $member */
-        foreach ($payedFor as $member) {
-            $payedForUids[] = $member->getUid();
-            if (!$this->payedFor->contains($member)) {
-                $this->payedFor->add($member);
-                $member->setPayer($this);
-            }
+        if (!$this->payedFor->contains($member)) {
+            $member->setPayer($this);
+            $this->payedFor->add($member);
         }
-        foreach ($this->payedFor as $member) {
-            if (!in_array($member->getUid(), $payedForUids)
-                && $this->payedFor->removeElement($member)
-                && $member->getPayer() === $this
-            ) {
-                $member->setPayer(null);
-            }
-        }
+
+        return $this;
+    }
+
+    public function removePayedFor(Member $member): static
+    {
+        $member->setPayer(null);
+        $this->payedFor->removeElement($member);
 
         return $this;
     }
