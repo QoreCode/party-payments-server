@@ -31,7 +31,10 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Put(
             denormalizationContext: ['groups' => 'member:update'],
         ),
-        new Delete(),
+        new Delete(
+            security: 'object.getPayments().isEmpty()',
+            securityMessage: 'Only member without payments could be removed.'
+        ),
     ],
     formats: ['json'],
     normalizationContext: ['groups' => 'member:read'],
@@ -77,12 +80,16 @@ class Member
     #[MemberAndPayerSameEvent]
     private Collection $payedFor;
 
+    #[ORM\OneToMany(mappedBy: 'payer', targetEntity: Payment::class)]
+    private Collection $payments;
+
     public function __construct($uid, $event, $user)
     {
         $this->uid = $uid;
         $this->event = $event;
         $this->user = $user;
         $this->payedFor = new ArrayCollection();
+        $this->payments = new ArrayCollection();
     }
 
     public function getUid(): string
@@ -149,5 +156,10 @@ class Member
     public function getPayedFor(): Collection
     {
         return $this->payedFor;
+    }
+
+    public function getPayments(): Collection
+    {
+        return $this->payments;
     }
 }
