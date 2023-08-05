@@ -4,12 +4,20 @@ namespace App\Serializer;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Serializer\ItemNormalizer;
-use App\Entity\ExcludeModification;
-use App\Entity\Member;
-use App\Entity\Payment;
+use App\Entity\User;
 
 class Normalizer extends ItemNormalizer
 {
+    public function supportsDenormalization(mixed $data, string $type, string $format = null, array $context = []): bool
+    {
+        if ($type === User::class) {
+            //TODO: Add support of the SerializedName annotation for custom Normalizer.
+            return false;
+        }
+
+        return parent::supportsDenormalization($data, $type, $format, $context);
+    }
+
     protected function normalizeRelation(
         ApiProperty $propertyMetadata,
         ?object $relatedObject,
