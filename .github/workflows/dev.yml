@@ -19,6 +19,7 @@ jobs:
                     script: |
                         cd ${{ secrets.WORK_DIR_DEV }}
                         git checkout ${{ secrets.DEV_BRANCH }}
+                        git pull
                         composer install
                         php bin/console doctrine:migrations:migrate
                         echo "Deployment successful!"
