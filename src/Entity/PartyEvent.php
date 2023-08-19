@@ -57,7 +57,7 @@ class PartyEvent
     #[Groups(['event:read', 'event:create', 'event:update'])]
     private string $name;
 
-    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\Column(type: Types::BIGINT)]
     #[Assert\NotBlank]
     #[Groups(['event:read', 'event:create'])]
     private int $date;
