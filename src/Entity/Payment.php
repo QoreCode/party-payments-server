@@ -72,11 +72,11 @@ class Payment
     private string $name;
 
     #[ORM\Column(type: Types::INTEGER)]
-    #[Assert\GreaterThan(0)]
+    #[Assert\GreaterThanOrEqual(0)]
     #[Groups(['payment:create', 'payment:update'])]
     private int $amount;
 
-    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\Column(type: Types::BIGINT)]
     #[Groups(['payment:create'])]
     private string $date;
 
